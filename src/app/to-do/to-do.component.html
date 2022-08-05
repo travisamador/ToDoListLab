@@ -1,0 +1,81 @@
+<body>
+  <div id="taskManager">
+    <h1>
+      <b>{{ title }}</b>
+    </h1>
+    <p>{{ description }}</p>
+
+    <input
+      class="filterInput"
+      type="text"
+      id="filter"
+      name="filter"
+      [(ngModel)]="filter"
+      placeholder="Filter your tasks"
+    />
+
+    <div *ngFor="let t of filterList(filter); index as i">
+      <p class="list">
+        {{ i + 1 }}.
+
+        <button
+          [ngClass]="{ editButton: !t.editMode, pressedEdit: t.editMode }"
+          (click)="toggleEditMode(t)"
+        >
+          Edit
+        </button>
+
+        <button
+          class="completeButton"
+          *ngIf="!t.completed"
+          (click)="completeTask(t)"
+        >
+          Complete
+        </button>
+
+        <s *ngIf="t.completed; else noStrike">{{ t.task }}</s>
+        <ng-template #noStrike>{{ t.task }}</ng-template>
+        <button class="removeButton" (click)="removeTask(t)">X</button>
+      </p>
+
+      <!-- <form
+        *ngIf="t.editMode"
+        #editForm="ngForm"
+        (ngSubmit)="editTask(t, editForm)"
+      > -->
+      <input
+        *ngIf="t.editMode"
+        class="changeInput"
+        name="task"
+        id="task"
+        [(ngModel)]="t.task"
+        placeholder="Change your task"
+      />
+      <!-- <br />
+        <button class="changeButton">Change</button>
+      </form> -->
+
+      <button
+        class="incompleteButton"
+        *ngIf="t.completed && t.editMode"
+        (click)="changeCompleted(t)"
+      >
+        Mark Incomplete
+      </button>
+    </div>
+
+    <h2 *ngIf="allDone()">Congratulations! ToDo List Completed!</h2>
+
+    <form #taskForm="ngForm" (ngSubmit)="addTask(taskForm)">
+      <input
+        class="AddInput"
+        name="task"
+        id="task"
+        ngModel
+        placeholder="Add your task"
+      />
+
+      <button class="addButton">Add</button>
+    </form>
+  </div>
+</body>
